@@ -12,6 +12,7 @@ else
     elif [ $build_status == "Running" ]; then
         exit 1
     elif [ $build_status == "Failed" ]; then
+        oc delete build -n dpdk $last_build
         start_build=true
     fi
 fi
