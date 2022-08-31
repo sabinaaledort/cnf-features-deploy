@@ -11,7 +11,7 @@ export TEST_POD_IMAGES_REGISTRY="${TEST_POD_IMAGES_REGISTRY:-quay.io/openshift-k
 export TEST_POD_CNF_TEST_IMAGE="${TEST_POD_CNF_TEST_IMAGE:-cnf-tests:4.11}"
 export TEST_POD_DPDK_TEST_IMAGE="${TEST_POD_DPDK_TEST_IMAGE:-dpdk:4.11}"
 
-export TEST_EXECUTION_IMAGE=$TEST_POD_IMAGES_REGISTRY$TEST_POD_CNF_TEST_IMAGE
+export TEST_EXECUTION_IMAGE="${TEST_EXECUTION_IMAGE:-$TEST_POD_IMAGES_REGISTRY$TEST_POD_CNF_TEST_IMAGE}"
 export SCTPTEST_HAS_NON_CNF_WORKERS="${SCTPTEST_HAS_NON_CNF_WORKERS:-true}"
 # In CI we don't care about cleaning the profile, because we may either throw the cluster away
 # or need to run the tests again. In both cases the execution will be faster without deleting the profile.
