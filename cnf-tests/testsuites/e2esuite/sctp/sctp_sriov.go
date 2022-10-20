@@ -72,7 +72,7 @@ var _ = Describe("[sriov] SCTP integration", func() {
 			}, 10*time.Minute, time.Second).Should(Equal(int64(5)))
 
 		} else {
-			err := sriovnamespaces.CleanNetworks(namespaces.SRIOVOperator, sriovclient)
+			err := sriovnamespaces.CleanNetworksByPrefix(namespaces.SRIOVOperator, sriovclient, "test-sctp")
 			Expect(err).ToNot(HaveOccurred())
 			err = sriovnamespaces.CleanPods(TestNamespace, sriovclient)
 			Expect(err).ToNot(HaveOccurred())

@@ -220,7 +220,7 @@ var _ = Describe("[sriov] operator", func() {
 			It("Should inject downward api volume with no labels present", func() {
 				sriovNetwork := &sriovv1.SriovNetwork{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "test-apivolnetwork",
+						Name:      "test-sriov-apivolnetwork",
 						Namespace: operatorNamespace,
 					},
 					Spec: sriovv1.SriovNetworkSpec{
@@ -233,7 +233,7 @@ var _ = Describe("[sriov] operator", func() {
 
 				Eventually(func() error {
 					netAttDef := &netattdefv1.NetworkAttachmentDefinition{}
-					return clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-apivolnetwork", Namespace: namespaces.Test}, netAttDef)
+					return clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-sriov-apivolnetwork", Namespace: namespaces.Test}, netAttDef)
 				}, (10+snoTimeoutMultiplier*110)*time.Second, 1*time.Second).ShouldNot(HaveOccurred())
 
 				podDefinition := pod.DefineWithNetworks([]string{sriovNetwork.Name})
@@ -282,7 +282,7 @@ var _ = Describe("[sriov] operator", func() {
 			It("Should inject downward api volume with labels present", func() {
 				sriovNetwork := &sriovv1.SriovNetwork{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "test-apivolnetwork",
+						Name:      "test-sriov-apivolnetwork",
 						Namespace: operatorNamespace,
 					},
 					Spec: sriovv1.SriovNetworkSpec{
@@ -295,7 +295,7 @@ var _ = Describe("[sriov] operator", func() {
 
 				Eventually(func() error {
 					netAttDef := &netattdefv1.NetworkAttachmentDefinition{}
-					return clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-apivolnetwork", Namespace: namespaces.Test}, netAttDef)
+					return clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-sriov-apivolnetwork", Namespace: namespaces.Test}, netAttDef)
 				}, (10+snoTimeoutMultiplier*110)*time.Second, 1*time.Second).ShouldNot(HaveOccurred())
 
 				podDefinition := pod.DefineWithNetworks([]string{sriovNetwork.Name})
@@ -418,7 +418,7 @@ var _ = Describe("[sriov] operator", func() {
 			// 25959
 			It("Should configure the spoofChk boolean variable", func() {
 				sriovNetwork := &sriovv1.SriovNetwork{
-					ObjectMeta: metav1.ObjectMeta{Name: "test-spoofnetwork", Namespace: operatorNamespace},
+					ObjectMeta: metav1.ObjectMeta{Name: "test-sriov-spoofnetwork", Namespace: operatorNamespace},
 					Spec: sriovv1.SriovNetworkSpec{
 						ResourceName: resourceName,
 						IPAM: `{"type":"host-local",
@@ -445,7 +445,7 @@ var _ = Describe("[sriov] operator", func() {
 
 				Eventually(func() bool {
 					networkDef := &sriovv1.SriovNetwork{}
-					err := clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-spoofnetwork",
+					err := clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-sriov-spoofnetwork",
 						Namespace: operatorNamespace}, networkDef)
 					return k8serrors.IsNotFound(err)
 				}, 10*time.Second, 1*time.Second).Should(BeTrue())
@@ -463,7 +463,7 @@ var _ = Describe("[sriov] operator", func() {
 			// 25960
 			It("Should configure the trust boolean variable", func() {
 				sriovNetwork := &sriovv1.SriovNetwork{
-					ObjectMeta: metav1.ObjectMeta{Name: "test-trustnetwork", Namespace: operatorNamespace},
+					ObjectMeta: metav1.ObjectMeta{Name: "test-sriov-trustnetwork", Namespace: operatorNamespace},
 					Spec: sriovv1.SriovNetworkSpec{
 						ResourceName: resourceName,
 						IPAM: `{"type":"host-local",
@@ -489,7 +489,7 @@ var _ = Describe("[sriov] operator", func() {
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(func() bool {
 					networkDef := &sriovv1.SriovNetwork{}
-					err := clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-trustnetwork",
+					err := clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-sriov-trustnetwork",
 						Namespace: operatorNamespace}, networkDef)
 					return k8serrors.IsNotFound(err)
 				}, 10*time.Second, 1*time.Second).Should(BeTrue())
@@ -507,7 +507,7 @@ var _ = Describe("[sriov] operator", func() {
 			// 25961
 			It("Should configure the the link state variable", func() {
 				sriovNetwork := &sriovv1.SriovNetwork{
-					ObjectMeta: metav1.ObjectMeta{Name: "test-statenetwork", Namespace: operatorNamespace},
+					ObjectMeta: metav1.ObjectMeta{Name: "test-sriov-statenetwork", Namespace: operatorNamespace},
 					Spec: sriovv1.SriovNetworkSpec{
 						ResourceName: resourceName,
 						IPAM: `{"type":"host-local",
@@ -533,7 +533,7 @@ var _ = Describe("[sriov] operator", func() {
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(func() bool {
 					networkDef := &sriovv1.SriovNetwork{}
-					err := clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-statenetwork",
+					err := clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-sriov-statenetwork",
 						Namespace: operatorNamespace}, networkDef)
 					return k8serrors.IsNotFound(err)
 				}, 10*time.Second, 1*time.Second).Should(BeTrue())
@@ -552,7 +552,7 @@ var _ = Describe("[sriov] operator", func() {
 				Expect(err).ToNot(HaveOccurred())
 				Eventually(func() bool {
 					networkDef := &sriovv1.SriovNetwork{}
-					err := clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-statenetwork",
+					err := clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-sriov-statenetwork",
 						Namespace: operatorNamespace}, networkDef)
 					return k8serrors.IsNotFound(err)
 				}, 10*time.Second, 1*time.Second).Should(BeTrue())
@@ -580,7 +580,7 @@ var _ = Describe("[sriov] operator", func() {
 
 					var maxTxRate = 100
 					var minTxRate = 40
-					sriovNetwork := &sriovv1.SriovNetwork{ObjectMeta: metav1.ObjectMeta{Name: "test-ratenetwork", Namespace: operatorNamespace},
+					sriovNetwork := &sriovv1.SriovNetwork{ObjectMeta: metav1.ObjectMeta{Name: "test-sriov-ratenetwork", Namespace: operatorNamespace},
 						Spec: sriovv1.SriovNetworkSpec{
 							ResourceName: resourceName,
 							IPAM: `{"type":"host-local",
@@ -598,7 +598,7 @@ var _ = Describe("[sriov] operator", func() {
 
 					netAttDef := &netattdefv1.NetworkAttachmentDefinition{}
 					Eventually(func() error {
-						return clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-ratenetwork", Namespace: namespaces.Test}, netAttDef)
+						return clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-sriov-ratenetwork", Namespace: namespaces.Test}, netAttDef)
 					}, (10+snoTimeoutMultiplier*110)*time.Second, 1*time.Second).ShouldNot(HaveOccurred())
 
 					checkFunc := func(line string) bool {
@@ -609,14 +609,14 @@ var _ = Describe("[sriov] operator", func() {
 						return false
 					}
 
-					validationFunction([]string{"test-ratenetwork"}, checkFunc)
+					validationFunction([]string{"test-sriov-ratenetwork"}, checkFunc)
 				})
 			})
 
 			// 25963
 			Describe("vlan and Qos vlan", func() {
 				It("Should configure the requested vlan and Qos vlan flags under the vf", func() {
-					sriovNetwork := &sriovv1.SriovNetwork{ObjectMeta: metav1.ObjectMeta{Name: "test-quosnetwork", Namespace: operatorNamespace},
+					sriovNetwork := &sriovv1.SriovNetwork{ObjectMeta: metav1.ObjectMeta{Name: "test-sriov-quosnetwork", Namespace: operatorNamespace},
 						Spec: sriovv1.SriovNetworkSpec{
 							ResourceName: resourceName,
 							IPAM: `{"type":"host-local",
@@ -634,7 +634,7 @@ var _ = Describe("[sriov] operator", func() {
 
 					netAttDef := &netattdefv1.NetworkAttachmentDefinition{}
 					Eventually(func() error {
-						return clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-quosnetwork", Namespace: namespaces.Test}, netAttDef)
+						return clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-sriov-quosnetwork", Namespace: namespaces.Test}, netAttDef)
 					}, (10+snoTimeoutMultiplier*110)*time.Second, 1*time.Second).ShouldNot(HaveOccurred())
 
 					checkFunc := func(line string) bool {
@@ -645,7 +645,7 @@ var _ = Describe("[sriov] operator", func() {
 						return false
 					}
 
-					validationFunction([]string{"test-quosnetwork"}, checkFunc)
+					validationFunction([]string{"test-sriov-quosnetwork"}, checkFunc)
 				})
 			})
 		})
@@ -671,7 +671,7 @@ var _ = Describe("[sriov] operator", func() {
 		Context("IPv6 configured secondary interfaces on pods", func() {
 			// 25874
 			It("should be able to ping each other", func() {
-				ipv6NetworkName := "test-ipv6network"
+				ipv6NetworkName := "test-sriov-ipv6network"
 				ipam := `{"type": "host-local","ranges": [[{"subnet": "3ffe:ffff:0:01ff::/64"}]],"dataDir": "/run/my-orchestrator/container-ipam-state"}`
 				err := network.CreateSriovNetwork(clients, sriovDevice, ipv6NetworkName, namespaces.Test, operatorNamespace, resourceName, ipam)
 				Expect(err).ToNot(HaveOccurred())
@@ -694,8 +694,8 @@ var _ = Describe("[sriov] operator", func() {
 		Context("NAD update", func() {
 			// 24713
 			It("NAD is updated when SriovNetwork spec/networkNamespace is changed", func() {
-				ns1 := "test-z1"
-				ns2 := "test-z2"
+				ns1 := "test-sriov-z1"
+				ns2 := "test-sriov-z2"
 				defer namespaces.DeleteAndWait(clients, ns1, 1*time.Minute)
 				defer namespaces.DeleteAndWait(clients, ns2, 1*time.Minute)
 				err := namespaces.Create(ns1, clients)
@@ -929,7 +929,7 @@ var _ = Describe("[sriov] operator", func() {
 				It("Should be possible to create a vfio-pci resource", func() {
 					By("creating a vfio-pci node policy")
 					resourceName := "testvfio"
-					_, err := network.CreateSriovPolicy(clients, "test-policy-", operatorNamespace, vfioNic.Name, vfioNode, 5, resourceName, "vfio-pci")
+					_, err := network.CreateSriovPolicy(clients, "test-sriov-policy-", operatorNamespace, vfioNic.Name, vfioNode, 5, resourceName, "vfio-pci")
 					Expect(err).ToNot(HaveOccurred())
 
 					By("waiting for the node state to be updated")
@@ -970,7 +970,7 @@ var _ = Describe("[sriov] operator", func() {
 				})
 
 				It("Should be possible to partition the pf's vfs", func() {
-					_, err := network.CreateSriovPolicy(clients, "test-policy-", operatorNamespace, vfioNic.Name+"#2-4", vfioNode, 5, "testresource", "netdevice")
+					_, err := network.CreateSriovPolicy(clients, "test-sriov-policy-", operatorNamespace, vfioNic.Name+"#2-4", vfioNode, 5, "testresource", "netdevice")
 					Expect(err).ToNot(HaveOccurred())
 
 					Eventually(func() sriovv1.Interfaces {
@@ -1002,7 +1002,7 @@ var _ = Describe("[sriov] operator", func() {
 						return capacity
 					}, 3*time.Minute, time.Second).Should(Equal(int64(3)))
 
-					_, err = network.CreateSriovPolicy(clients, "test-policy-", operatorNamespace, vfioNic.Name+"#0-1", vfioNode, 5, "testresource1", "vfio-pci")
+					_, err = network.CreateSriovPolicy(clients, "test-sriov-policy-", operatorNamespace, vfioNic.Name+"#0-1", vfioNode, 5, "testresource1", "vfio-pci")
 					Expect(err).ToNot(HaveOccurred())
 
 					Eventually(func() sriovv1.Interfaces {
@@ -1067,7 +1067,7 @@ var _ = Describe("[sriov] operator", func() {
 
 					firstConfig := &sriovv1.SriovNetworkNodePolicy{
 						ObjectMeta: metav1.ObjectMeta{
-							GenerateName: "test-policy",
+							GenerateName: "test-sriov-policy",
 							Namespace:    operatorNamespace,
 						},
 
@@ -1102,7 +1102,7 @@ var _ = Describe("[sriov] operator", func() {
 
 					secondConfig := &sriovv1.SriovNetworkNodePolicy{
 						ObjectMeta: metav1.ObjectMeta{
-							GenerateName: "test-policy",
+							GenerateName: "test-sriov-policy",
 							Namespace:    operatorNamespace,
 						},
 
@@ -1258,7 +1258,7 @@ var _ = Describe("[sriov] operator", func() {
 
 						mtuPolicy := &sriovv1.SriovNetworkNodePolicy{
 							ObjectMeta: metav1.ObjectMeta{
-								GenerateName: "test-mtupolicy",
+								GenerateName: "test-sriov-mtupolicy",
 								Namespace:    operatorNamespace,
 							},
 
@@ -1293,7 +1293,7 @@ var _ = Describe("[sriov] operator", func() {
 
 					sriovNetwork := &sriovv1.SriovNetwork{
 						ObjectMeta: metav1.ObjectMeta{
-							Name:      "test-mtuvolnetwork",
+							Name:      "test-sriov-mtuvolnetwork",
 							Namespace: operatorNamespace,
 						},
 						Spec: sriovv1.SriovNetworkSpec{
@@ -1314,14 +1314,14 @@ var _ = Describe("[sriov] operator", func() {
 
 					Eventually(func() error {
 						netAttDef := &netattdefv1.NetworkAttachmentDefinition{}
-						return clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-mtuvolnetwork", Namespace: namespaces.Test}, netAttDef)
+						return clients.Get(context.Background(), runtimeclient.ObjectKey{Name: "test-sriov-mtuvolnetwork", Namespace: namespaces.Test}, netAttDef)
 					}, (10+snoTimeoutMultiplier*110)*time.Second, 1*time.Second).ShouldNot(HaveOccurred())
 
 				})
 
 				// 27662
 				It("Should support jumbo frames", func() {
-					podDefinition := pod.DefineWithNetworks([]string{"test-mtuvolnetwork"})
+					podDefinition := pod.DefineWithNetworks([]string{"test-sriov-mtuvolnetwork"})
 					firstPod, err := clients.Pods(namespaces.Test).Create(context.Background(), podDefinition, metav1.CreateOptions{})
 					Expect(err).ToNot(HaveOccurred())
 
@@ -1348,7 +1348,7 @@ var _ = Describe("[sriov] operator", func() {
 					Expect(err).ToNot(HaveOccurred())
 					Expect(len(firstPodIPs)).To(Equal(1))
 
-					podDefinition = pod.DefineWithNetworks([]string{"test-mtuvolnetwork"})
+					podDefinition = pod.DefineWithNetworks([]string{"test-sriov-mtuvolnetwork"})
 					secondPod, err := clients.Pods(namespaces.Test).Create(context.Background(), podDefinition, metav1.CreateOptions{})
 					Expect(err).ToNot(HaveOccurred())
 
@@ -1397,7 +1397,7 @@ var _ = Describe("[sriov] operator", func() {
 				By("creating a network policy")
 				config := &sriovv1.SriovNetworkNodePolicy{
 					ObjectMeta: metav1.ObjectMeta{
-						GenerateName: "test-policy",
+						GenerateName: "test-sriov-policy",
 						Namespace:    operatorNamespace,
 					},
 
@@ -1442,7 +1442,7 @@ var _ = Describe("[sriov] operator", func() {
 				}, 10*time.Minute, time.Second).Should(Equal(int64(numVfs)))
 
 				By("creating a network object")
-				ipv6NetworkName := "test-ipv6network"
+				ipv6NetworkName := "test-sriov-ipv6network"
 				ipam := `{"type": "host-local","ranges": [[{"subnet": "3ffe:ffff:0:01ff::/64"}]],"dataDir": "/run/my-orchestrator/container-ipam-state"}`
 				err = network.CreateSriovNetwork(clients, &nic, ipv6NetworkName, namespaces.Test, operatorNamespace, resourceName, ipam)
 				Expect(err).ToNot(HaveOccurred())
@@ -1538,7 +1538,7 @@ var _ = Describe("[sriov] operator", func() {
 		Context("vhost-net and tun devices Validation", func() {
 			var node string
 			resourceName := "vhostresource"
-			vhostnetwork := "test-vhostnetwork"
+			vhostnetwork := "test-sriov-vhostnetwork"
 			numVfs := 5
 			var intf *sriovv1.InterfaceExt
 			var err error
@@ -1579,7 +1579,7 @@ var _ = Describe("[sriov] operator", func() {
 
 					mtuPolicy := &sriovv1.SriovNetworkNodePolicy{
 						ObjectMeta: metav1.ObjectMeta{
-							GenerateName: "test-vhostpolicy",
+							GenerateName: "test-sriov-vhostpolicy",
 							Namespace:    operatorNamespace,
 						},
 
@@ -1927,7 +1927,7 @@ func daemonsScheduledOnNodes(selector string) bool {
 }
 
 func createSriovPolicy(sriovDevice string, testNode string, numVfs int, resourceName string) {
-	_, err := network.CreateSriovPolicy(clients, "test-policy-", operatorNamespace, sriovDevice, testNode, numVfs, resourceName, "netdevice")
+	_, err := network.CreateSriovPolicy(clients, "test-sriov-policy-", operatorNamespace, sriovDevice, testNode, numVfs, resourceName, "netdevice")
 	Expect(err).ToNot(HaveOccurred())
 	WaitForSRIOVStable()
 
@@ -2040,7 +2040,7 @@ func createVanillaNetworkPolicy(node string, sriovInfos *cluster.EnabledNodes, n
 
 	config := &sriovv1.SriovNetworkNodePolicy{
 		ObjectMeta: metav1.ObjectMeta{
-			GenerateName: "test-policy",
+			GenerateName: "test-sriovpolicy",
 			Namespace:    operatorNamespace,
 		},
 

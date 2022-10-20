@@ -164,7 +164,7 @@ var _ = Describe("[dpdk]", func() {
 		execute.BeforeAll(func() {
 			if !discovery.Enabled() {
 				namespaces.CleanPods(namespaces.DpdkTest, sriovclient)
-				networks.CleanSriov(sriovclient)
+				networks.CleanSriov(sriovclient, "test-dpdk")
 				networks.CreateSriovPolicyAndNetworkDPDKOnlyWithVhost(dpdkResourceName, workerCnfLabelSelector)
 			} else {
 				sriovNetworkNodePolicyList := &sriovv1.SriovNetworkNodePolicyList{}
@@ -279,7 +279,7 @@ sleep INF
 		execute.BeforeAll(func() {
 			if !discovery.Enabled() {
 				namespaces.CleanPods(namespaces.DpdkTest, sriovclient)
-				networks.CleanSriov(sriovclient)
+				networks.CleanSriov(sriovclient, "test-dpdk")
 				networks.CreateSriovPolicyAndNetworkDPDKOnly(dpdkResourceName, workerCnfLabelSelector)
 			}
 			var err error
@@ -438,7 +438,7 @@ sleep INF
 		})
 		execute.BeforeAll(func() {
 			namespaces.CleanPods(namespaces.DpdkTest, sriovclient)
-			networks.CleanSriov(sriovclient)
+			networks.CleanSriov(sriovclient, "test-dpdk")
 			createSriovPolicyAndNetworkShared()
 			var err error
 			dpdkWorkloadPod, err = pods.CreateDPDKWorkload(nodeSelector,
@@ -472,7 +472,7 @@ sleep INF
 		})
 
 		It("Run a regular pod using a vf shared with the dpdk's pf", func() {
-			podDefinition := pods.DefineWithNetworks(namespaces.DpdkTest, []string{"test-regular-network"})
+			podDefinition := pods.DefineWithNetworks(namespaces.DpdkTest, []string{"test-dpdk-regular-network"})
 			pod, err := client.Client.Pods(namespaces.DpdkTest).Create(context.Background(), podDefinition, metav1.CreateOptions{})
 			Expect(err).ToNot(HaveOccurred())
 			err = pods.WaitForCondition(client.Client, pod, corev1.ContainersReady, corev1.ConditionTrue, 3*time.Minute)
@@ -505,7 +505,7 @@ sleep INF
 			}
 
 			namespaces.CleanPods(namespaces.DpdkTest, sriovclient)
-			networks.CleanSriov(sriovclient)
+			networks.CleanSriov(sriovclient, "test-dpdk")
 		})
 
 		DescribeTable("Test connectivity using the requested nic", func(vendorID, deviceID string) {
@@ -560,7 +560,7 @@ sleep INF
 			if discovery.Enabled() {
 				Skip("Downward API test disabled for discovery mode")
 			}
-			networks.CleanSriov(sriovclient)
+			networks.CleanSriov(sriovclient, "test-dpdk")
 			createSriovPolicyAndNetworkShared()
 			var err error
 			dpdkWorkloadPod, err = pods.CreateDPDKWorkload(nodeSelector,
@@ -618,7 +618,7 @@ sleep INF
 
 			By("cleaning the sriov test configuration")
 			namespaces.CleanPods(namespaces.DpdkTest, sriovclient)
-			networks.CleanSriov(sriovclient)
+			networks.CleanSriov(sriovclient, "test-dpdk")
 		})
 	})
 })
@@ -695,7 +695,7 @@ func createSriovPolicyAndNetworkShared() {
 	createPoliciesSharedPF(sriovDevice, nn[0], dpdkResourceName, regularPodResourceName)
 
 	networks.CreateSriovNetwork(sriovclient, sriovDevice, "test-dpdk-network", namespaces.DpdkTest, namespaces.SRIOVOperator, dpdkResourceName, "")
-	networks.CreateSriovNetwork(sriovclient, sriovDevice, "test-regular-network", namespaces.DpdkTest, namespaces.SRIOVOperator, regularPodResourceName, "")
+	networks.CreateSriovNetwork(sriovclient, sriovDevice, "test-dpdk-regular-network", namespaces.DpdkTest, namespaces.SRIOVOperator, regularPodResourceName, "")
 }
 
 func findSriovDeviceForDPDK(sriovInfos *sriovcluster.EnabledNodes, nodeNames []string, vendorID, deviceID string) (string, *sriovv1.InterfaceExt, bool) {
@@ -742,7 +742,7 @@ func createPoliciesSharedPF(sriovDevice *sriovv1.InterfaceExt, testNode string, 
 func createRegularPolicy(sriovDevice *sriovv1.InterfaceExt, testNode, dpdkResourceName, pfPartition string, vfsNum int) {
 	regularPolicy := &sriovv1.SriovNetworkNodePolicy{
 		ObjectMeta: metav1.ObjectMeta{
-			GenerateName: "test-policy",
+			GenerateName: "test-dpdk-policy",
 			Namespace:    namespaces.SRIOVOperator,
 		},
 

@@ -29,8 +29,8 @@ import (
 
 const (
 	resourceNameVRF = "sriovnicvrf"
-	testNetworkRed  = "test-vrf-sriov-network-red"
-	testNetworkBlue = "test-vrf-sriov-network-blue"
+	testNetworkRed  = "test-sriov-vrf-network-red"
+	testNetworkBlue = "test-sriov-vrf-network-blue"
 )
 
 var _ = Describe("[sriov] VRF integration", func() {
@@ -70,7 +70,7 @@ var _ = Describe("[sriov] VRF integration", func() {
 		Expect(len(nodesList)).To(BeNumerically(">", 0))
 		sriovDevice, err := sriovInfos.FindOneSriovDevice(nodesList[0])
 		Expect(err).ToNot(HaveOccurred())
-		_, err = sriovNetwork.CreateSriovPolicy(sriovclient, "test-policy-", namespaces.SRIOVOperator, sriovDevice.Name, nodesList[0], 5, resourceNameVRF, "netdevice")
+		_, err = sriovNetwork.CreateSriovPolicy(sriovclient, "test-sriov-policy-", namespaces.SRIOVOperator, sriovDevice.Name, nodesList[0], 5, resourceNameVRF, "netdevice")
 		Expect(err).ToNot(HaveOccurred())
 		networks.WaitStable(sriovclient)
 

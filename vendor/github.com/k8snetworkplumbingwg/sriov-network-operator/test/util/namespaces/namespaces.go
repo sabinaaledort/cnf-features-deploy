@@ -74,8 +74,8 @@ func CleanPods(namespace string, cs *testclient.ClientSet) error {
 	return err
 }
 
-// CleanPolicies deletes all SriovNetworkNodePolicies in operatorNamespace
-func CleanPolicies(operatorNamespace string, cs *testclient.ClientSet) error {
+// CleanPoliciesByPrefix deletes SriovNetworkNodePolicies by prefix name in operatorNamespace
+func CleanPoliciesByPrefix(operatorNamespace string, cs *testclient.ClientSet, prefix string) error {
 	policies := sriovv1.SriovNetworkNodePolicyList{}
 	err := cs.List(context.Background(),
 		&policies,
@@ -85,7 +85,7 @@ func CleanPolicies(operatorNamespace string, cs *testclient.ClientSet) error {
 		return err
 	}
 	for _, p := range policies.Items {
-		if p.Name != "default" && strings.HasPrefix(p.Name, "test-") {
+		if p.Name != "default" && strings.HasPrefix(p.Name, prefix) {
 			err := cs.Delete(context.Background(), &p)
 			if err != nil {
 				return fmt.Errorf("failed to delete policy %v", err)
@@ -95,8 +95,13 @@ func CleanPolicies(operatorNamespace string, cs *testclient.ClientSet) error {
 	return err
 }
 
-// CleanNetworks deletes all network in operatorNamespace
-func CleanNetworks(operatorNamespace string, cs *testclient.ClientSet) error {
+// CleanPolicies deletes all SriovNetworkNodePolicies in operatorNamespace
+func CleanPolicies(operatorNamespace string, cs *testclient.ClientSet) error {
+	return CleanPoliciesByPrefix(operatorNamespace, cs, "test-")
+}
+
+// CleanNetworksByPrefix deletes network by prefix name in operatorNamespace
+func CleanNetworksByPrefix(operatorNamespace string, cs *testclient.ClientSet, prefix string) error {
 	networks := sriovv1.SriovNetworkList{}
 	err := cs.List(context.Background(),
 		&networks,
@@ -105,17 +110,22 @@ func CleanNetworks(operatorNamespace string, cs *testclient.ClientSet) error {
 		return err
 	}
 	for _, n := range networks.Items {
-		if strings.HasPrefix(n.Name, "test-") {
+		if strings.HasPrefix(n.Name, prefix) {
 			err := cs.Delete(context.Background(), &n)
 			if err != nil {
 				return fmt.Errorf("failed to delete network %v", err)
 			}
 		}
 	}
-	return waitForSriovNetworkDeletion(operatorNamespace, cs, 15*time.Second)
+	return waitForSriovNetworkDeletion(operatorNamespace, cs, 15*time.Second, prefix)
 }
 
-func waitForSriovNetworkDeletion(operatorNamespace string, cs *testclient.ClientSet, timeout time.Duration) error {
+// CleanNetworks deletes all network in operatorNamespace
+func CleanNetworks(operatorNamespace string, cs *testclient.ClientSet) error {
+	return CleanNetworksByPrefix(operatorNamespace, cs, "test-")
+}
+
+func waitForSriovNetworkDeletion(operatorNamespace string, cs *testclient.ClientSet, timeout time.Duration, prefix string) error {
 	return wait.PollImmediate(time.Second, timeout, func() (bool, error) {
 		networks := sriovv1.SriovNetworkList{}
 		err := cs.List(context.Background(),
@@ -125,7 +135,7 @@ func waitForSriovNetworkDeletion(operatorNamespace string, cs *testclient.Client
 			return false, err
 		}
 		for _, network := range networks.Items {
-			if strings.HasPrefix(network.Name, "test-") {
+			if strings.HasPrefix(network.Name, prefix) {
 				return false, nil
 			}
 		}
@@ -139,14 +149,14 @@ func Clean(operatorNamespace, namespace string, cs *testclient.ClientSet, discov
 	if err != nil {
 		return err
 	}
-	err = CleanNetworks(operatorNamespace, cs)
+	err = CleanNetworksByPrefix(operatorNamespace, cs, "test-sriov")
 	if err != nil {
 		return err
 	}
 	if discoveryEnabled {
 		return nil
 	}
-	err = CleanPolicies(operatorNamespace, cs)
+	err = CleanPoliciesByPrefix(operatorNamespace, cs, "test-sriov")
 	if err != nil {
 		return err
 	}

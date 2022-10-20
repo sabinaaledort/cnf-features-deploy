@@ -45,12 +45,12 @@ func init() {
 }
 
 // CleanSriov cleans SriovNetworks and SriovNetworkNodePolicies with the prefix of `test-`, that are in the `openshift-sriov-network-operator`
-func CleanSriov(sriovclient *sriovtestclient.ClientSet) {
-	err := sriovnamespaces.CleanNetworks(namespaces.SRIOVOperator, sriovclient)
+func CleanSriov(sriovclient *sriovtestclient.ClientSet, prefix string) {
+	err := sriovnamespaces.CleanNetworksByPrefix(namespaces.SRIOVOperator, sriovclient, prefix)
 	Expect(err).ToNot(HaveOccurred())
 
 	if !discovery.Enabled() {
-		err = sriovnamespaces.CleanPolicies(namespaces.SRIOVOperator, sriovclient)
+		err = sriovnamespaces.CleanPoliciesByPrefix(namespaces.SRIOVOperator, sriovclient, prefix)
 		Expect(err).ToNot(HaveOccurred())
 	}
 	WaitStable(sriovclient)
@@ -70,7 +70,7 @@ func CreateSriovPolicyAndNetwork(sriovclient *sriovtestclient.ClientSet, namespa
 	sriovDevice, err := sriovInfos.FindOneSriovDevice(node)
 	Expect(err).ToNot(HaveOccurred())
 
-	_, err = sriovnetwork.CreateSriovPolicy(sriovclient, "test-policy", namespaces.SRIOVOperator, sriovDevice.Name, node, numVfs, resourceName, "netdevice")
+	_, err = sriovnetwork.CreateSriovPolicy(sriovclient, "test-sriov-policy", namespaces.SRIOVOperator, sriovDevice.Name, node, numVfs, resourceName, "netdevice")
 	Expect(err).ToNot(HaveOccurred())
 	WaitStable(sriovclient)
 

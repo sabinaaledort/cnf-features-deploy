@@ -168,7 +168,7 @@ var _ = Describe("[s2i]", func() {
 		Expect(err).ToNot(HaveOccurred())
 
 		namespaces.CleanPods(namespaces.DpdkTest, sriovclient)
-		networks.CleanSriov(sriovclient)
+		networks.CleanSriov(sriovclient, "test-dpdk")
 		networks.CreateSriovPolicyAndNetworkDPDKOnly(dpdkResourceName, workerCnfLabelSelector)
 
 		dpdkWorkloadPod, err = pods.CreateDPDKWorkload(nodeSelector,
@@ -229,7 +229,7 @@ var _ = Describe("[s2i]", func() {
 
 			By("cleaning the sriov test configuration")
 			namespaces.CleanPods(namespaces.DpdkTest, sriovclient)
-			networks.CleanSriov(sriovclient)
+			networks.CleanSriov(sriovclient, "test-dpdk")
 		})
 	})
 })

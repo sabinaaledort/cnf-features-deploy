@@ -52,17 +52,17 @@ var _ = Describe("[sriov] Tuning CNI integration", func() {
 
 		execute.BeforeAll(func() {
 			namespaces.CleanPods(SriovTestNamespace, sriovclient)
-			networks.CleanSriov(sriovclient)
+			networks.CleanSriov(sriovclient, "test-sriov")
 			sysctls, err := networks.SysctlConfig(map[string]string{fmt.Sprintf(Sysctl, "IFNAME"): "1"})
 			Expect(err).ToNot(HaveOccurred())
-			networks.CreateSriovPolicyAndNetwork(sriovclient, namespaces.SRIOVOperator, "test-network", "testresource", fmt.Sprintf("{%s}", sysctls))
+			networks.CreateSriovPolicyAndNetwork(sriovclient, namespaces.SRIOVOperator, "test-sriov-network", "testresource", fmt.Sprintf("{%s}", sysctls))
 
 			By("Checking the network-attachment-defintion is ready")
 			Eventually(func() error {
 				nad := netattdefv1.NetworkAttachmentDefinition{}
 				objKey := apitypes.NamespacedName{
 					Namespace: namespaces.SRIOVOperator,
-					Name:      "test-network",
+					Name:      "test-sriov-network",
 				}
 				err := client.Client.Get(context.Background(), objKey, &nad)
 				return err
@@ -70,7 +70,7 @@ var _ = Describe("[sriov] Tuning CNI integration", func() {
 		})
 
 		It("pods with sysctl's over sriov interface should start", func() {
-			podDefinition := pods.DefineWithNetworks(SriovTestNamespace, []string{fmt.Sprintf("%s/%s", namespaces.SRIOVOperator, "test-network")})
+			podDefinition := pods.DefineWithNetworks(SriovTestNamespace, []string{fmt.Sprintf("%s/%s", namespaces.SRIOVOperator, "test-sriov-network")})
 			pod, err := client.Client.Pods(SriovTestNamespace).Create(context.Background(), podDefinition, metav1.CreateOptions{})
 			Expect(err).ToNot(HaveOccurred())
 			err = pods.WaitForCondition(client.Client, pod, corev1.ContainersReady, corev1.ConditionTrue, 1*time.Minute)
@@ -89,8 +89,8 @@ var _ = Describe("[sriov] Tuning CNI integration", func() {
 			Expect(err).ToNot(HaveOccurred())
 
 			podDefinition := pods.DefineWithNetworks(SriovTestNamespace, []string{
-				fmt.Sprintf("%s/%s", namespaces.SRIOVOperator, "test-network"),
-				fmt.Sprintf("%s/%s", namespaces.SRIOVOperator, "test-network"),
+				fmt.Sprintf("%s/%s", namespaces.SRIOVOperator, "test-sriov-network"),
+				fmt.Sprintf("%s/%s", namespaces.SRIOVOperator, "test-sriov-network"),
 				fmt.Sprintf("%s/%s@%s", SriovTestNamespace, "bond", bondLinkName),
 			})
 			pod, err := client.Client.Pods(SriovTestNamespace).Create(context.Background(), podDefinition, metav1.CreateOptions{})

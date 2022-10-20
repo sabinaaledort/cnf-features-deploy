@@ -41,7 +41,7 @@ var _ = Describe("[sriov] Bond CNI integration", func() {
 		Expect(err).ToNot(HaveOccurred())
 
 		By("CleanSriov...")
-		networks.CleanSriov(sriovclient)
+		networks.CleanSriov(sriovclient, "test-sriov")
 
 		By("CreateSriovPolicyAndNetwork...")
 		networks.CreateSriovPolicyAndNetwork(sriovclient, namespaces.SRIOVOperator, "test-sriov-for-bond-network", "testresource", "")
