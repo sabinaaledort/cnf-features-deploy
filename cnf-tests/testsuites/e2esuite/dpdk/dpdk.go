@@ -182,9 +182,6 @@ var _ = Describe("[dpdk]", func() {
 			if discovery.Enabled() && !policyHasVhostnet {
 				Skip("Missing SriovNetworkNodePolicy with NeedVhostNet enabled")
 			}
-		})
-
-		AfterEach(func() {
 			namespaces.CleanPods(namespaces.DpdkTest, client.Client)
 		})
 
